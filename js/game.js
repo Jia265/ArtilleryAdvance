@@ -13,6 +13,7 @@ Game.preload = function() {
     game.load.tilemap('map', 'assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('tileset', 'assets/map/tilesheet.png',32,32);
     game.load.image('sprite','assets/sprites/sprite.png');
+    game.load.spritesheet('button','assets/sprites/button_sprite_sheet.png', 193, 71);
 };
 
 Game.create = function(){
@@ -25,6 +26,11 @@ Game.create = function(){
     for(var i = 0; i < map.layers.length; i++) {
         layer = map.createLayer(i);
     }
+
+    button = game.add.button(game.world.centerX - 95, 400, 'button', Game.actionOnClick, this, 2, 1, 0);
+    button.onInputOver.add(Game.over, this);
+    button.onInputOut.add(Game.out, this);
+    button.onInputUp.add(Game.up, this);
     layer.inputEnabled = true; // Allows clicking on the map ; it's enough to do it on the last layer
     layer.events.onInputUp.add(Game.getCoordinates, this);
     Client.askNewPlayer();
@@ -50,4 +56,19 @@ Game.movePlayer = function(id,x,y){
 Game.removePlayer = function(id){
     Game.playerMap[id].destroy();
     delete Game.playerMap[id];
+};
+Game.up = function() {
+    console.log('button up', arguments);
+};
+
+Game.over = function() {
+    console.log('button over');
+};
+
+Game.out = function() {
+    console.log('button out');
+};
+
+Game.actionOnClick = function() {
+     console.log("clicked");
 };
