@@ -3,6 +3,7 @@
  */
 
 var Client = {};
+var playerId;
 Client.socket = io.connect();
 
 Client.sendTest = function(){
@@ -10,12 +11,27 @@ Client.sendTest = function(){
     Client.socket.emit('test');
 };
 
+Client.getPlayerId = function(){
+    console.log("retrieving player ID from server");
+    Client.socket.emit('getClientId');
+};
+
+Client.socket.on('receiveClientId', function(data){
+    console.log(data);
+    playerId = data.playerId;
+});
+
+Client.showPlayerId = function(){
+    console.log(playerId);
+};
+
 Client.askNewPlayer = function(){
+    console.log("new P asked");
     Client.socket.emit('newplayer');
 };
 
-Client.sendClick = function(x,y){
-  Client.socket.emit('click',{x:x,y:y});
+Client.sendClick = function(){
+  Client.socket.emit('click', {x:1, y:1});
 };
 
 Client.socket.on('newplayer',function(data){
@@ -23,17 +39,5 @@ Client.socket.on('newplayer',function(data){
 });
 
 Client.socket.on('allplayers',function(data){
-    for(var i = 0; i < data.length; i++){
-        Game.addNewPlayer(data[i].id,data[i].x,data[i].y);
-    }
-
-    Client.socket.on('move',function(data){
-        Game.movePlayer(data.id,data.x,data.y);
-    });
-
-    Client.socket.on('remove',function(id){
-        Game.removePlayer(id);
-    });
+    console.log("Recieved all players message "+ data);
 });
-
-

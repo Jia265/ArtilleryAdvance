@@ -28,7 +28,8 @@ io.on('connection',function(socket){
         socket.emit('allplayers',getAllPlayers());
         socket.broadcast.emit('newplayer',socket.player);
 
-        socket.on('click',function(data){
+        socket.on('click',function(){
+            data = {x: 10, y: 10};
             console.log('click to '+data.x+', '+data.y);
             socket.player.x = data.x;
             socket.player.y = data.y;
@@ -37,6 +38,11 @@ io.on('connection',function(socket){
 
         socket.on('disconnect',function(){
             io.emit('remove',socket.player.id);
+        });
+
+        socket.on('getClientId', function() {
+            console.log("sending player id");
+            io.emit('receiveClientId', {playerId: socket.player.id});
         });
     });
 
